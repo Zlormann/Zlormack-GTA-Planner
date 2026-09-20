@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="HeistScope — tableau de bord communautaire pour GTA Online."
+  >
+
+  <title>HeistScope — GTA Online Companion</title>
+
+  <link
+    rel="stylesheet"
+    href="css/heistscope.css"
+  >
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="brand">
+        <div class="brand-name">
+          HEIST<span>SCOPE</span>
+        </div>
+
+        <div class="brand-subtitle">
+          Your GTA Online companion
+        </div>
+      </div>
+
+      <nav class="navigation">
+
+        <button class="nav-item active">
+          <span>⌂</span>
+          Tableau de bord
+        </button>
+
+        <button class="nav-item">
+          <span>▣</span>
+          Cette semaine
+        </button>
+
+        <button class="nav-item">
+          <span>◇</span>
+          Mon empire
+        </button>
+
+        <button class="nav-item">
+          <span>✓</span>
+          Planificateur
+        </button>
+
+        <button class="nav-item">
+          <span>↗</span>
+          Progression
+        </button>
+
+        <button class="nav-item">
+          <span>⚙</span>
+          Paramètres
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>
+          Créé par
+          <strong>Zlormack</strong>
+        </p>
+
+        <small>
+          Application communautaire indépendante.
+        </small>
+      </div>
+
+    </aside>
+
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="main-content">
+
+      <!-- HEADER -->
+      <header class="topbar">
+
+        <div>
+          <h1>Bienvenue sur HeistScope</h1>
+
+          <p>
+            Suivez votre progression et organisez
+            votre empire GTA Online.
+          </p>
+        </div>
+
+        <div class="topbar-actions">
+
+          <button
+            id="platformButton"
+            class="control-button"
+          >
+            🎮 Xbox Series X|S
+            <span>⌄</span>
+          </button>
+
+          <button
+            id="themeButton"
+            class="icon-button"
+            aria-label="Changer l'apparence"
+          >
+            ◐
+          </button>
+
+          <button
+            class="icon-button"
+            aria-label="Paramètres"
+          >
+            ⚙
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <!-- ROCKSTAR LIVE -->
+      <section class="rockstar-live">
+
+        <div class="section-heading">
+
+          <div>
+            <span class="live-dot"></span>
+
+            <h2>ROCKSTAR LIVE</h2>
+
+            <span class="section-description">
+              Actualités, bonus et promotions
+            </span>
+          </div>
+
+          <span id="lastSync">
+            En attente de synchronisation
+          </span>
+
+        </div>
+
+
+        <div class="live-grid">
+
+          <article class="live-card news">
+
+            <span class="card-label">
+              ACTUALITÉ
+            </span>
+
+            <h3>
+              Actualités GTA Online
+            </h3>
+
+            <p>
+              Les dernières informations publiques
+              Rockstar apparaîtront ici.
+            </p>
+
+            <button>
+              Voir les détails →
+            </button>
+
+          </article>
+
+
+          <article class="live-card bonus">
+
+            <span class="card-label">
+              BONUS GTA$/RP
+            </span>
+
+            <h3>
+              Bonus de la semaine
+            </h3>
+
+            <p>
+              Les activités bénéficiant de récompenses
+              supplémentaires apparaîtront ici.
+            </p>
+
+            <button>
+              Voir les activités →
+            </button>
+
+          </article>
+
+
+          <article class="live-card promotion">
+
+            <span class="card-label">
+              PROMOTION
+            </span>
+
+            <h3>
+              Promotions en cours
+            </h3>
+
+            <p>
+              Les réductions compatibles avec votre
+              plateforme apparaîtront ici.
+            </p>
+
+            <button>
+              Voir les promotions →
+            </button>
+
+          </article>
+
+        </div>
+
+
+        <div class="rockstar-source">
+          Source :
+          <strong>Rockstar Games</strong>
+        </div>
+
+      </section>
+
+
+      <!-- PROGRESSION -->
+      <section class="dashboard-section">
+
+        <h2>VOTRE PROGRESSION</h2>
+
+        <div class="stats-grid">
+
+          <article class="stat-card">
+            <span>SOLDE GTA$</span>
+            <strong id="moneyValue">
+              GTA$ 0
+            </strong>
+          </article>
+
+          <article class="stat-card">
+            <span>OBJECTIF PERSONNEL</span>
+            <strong id="goalValue">
+              GTA$ 0
+            </strong>
+          </article>
+
+          <article class="stat-card">
+            <span>PROGRESSION</span>
+
+            <strong id="progressValue">
+              0 %
+            </strong>
+
+            <div class="progress-bar">
+              <div
+                id="progressBar"
+                class="progress-fill"
+              ></div>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <span>PLATEFORME</span>
+
+            <strong id="platformValue">
+              Xbox Series X|S
+            </strong>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- EMPIRE -->
+      <section class="dashboard-section">
+
+        <div class="section-heading">
+          <h2>VOTRE EMPIRE</h2>
+
+          <button class="text-button">
+            Gérer →
+          </button>
+        </div>
+
+        <div
+          id="businessGrid"
+          class="business-grid"
+        >
+
+          <article class="business-card">
+            <span class="business-icon">▦</span>
+
+            <div>
+              <strong>Bunker</strong>
+              <span>À configurer</span>
+            </div>
+          </article>
+
+          <article class="business-card">
+            <span class="business-icon">◆</span>
+
+            <div>
+              <strong>Boîte de nuit</strong>
+              <span>À configurer</span>
+            </div>
+          </article>
+
+          <article class="business-card">
+            <span class="business-icon">⚗</span>
+
+            <div>
+              <strong>Laboratoire d'acide</strong>
+              <span>À configurer</span>
+            </div>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- FOOTER -->
+      <footer class="footer">
+
+        <div>
+          <strong>HEISTSCOPE</strong>
+          <span>
+            Plus qu'un planner. Votre vision de GTA Online.
+          </span>
+        </div>
+
+        <div>
+          Informations publiques :
+          Rockstar Games
+          · Application communautaire indépendante
+          · Créée par Zlormack
+        </div>
+
+      </footer>
+
+    </main>
+
+  </div>
+
+
+  <script src="js/heistscope.js"></script>
+
+</body>
+</html>
