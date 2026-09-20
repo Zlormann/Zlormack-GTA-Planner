@@ -886,3 +886,243 @@ html[data-theme="light"] .platform-menu {
     );
   }
 }
+
+/* =========================================
+   PROGRESSION DU JOUEUR
+   ========================================= */
+
+.stat-card.editable {
+  cursor: pointer;
+
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.stat-card.editable:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+}
+
+.stat-edit-hint {
+  margin-top: 7px;
+
+  color: var(--blue-light) !important;
+  font-size: 10px !important;
+  font-weight: 700;
+}
+
+.player-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.62);
+
+  z-index: 2000;
+}
+
+.player-dialog-backdrop.open {
+  display: flex;
+}
+
+.player-dialog {
+  width: min(420px, 100%);
+
+  padding: 22px;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background: var(--surface);
+
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.45);
+}
+
+.player-dialog h3 {
+  margin: 0 0 6px;
+  font-size: 19px;
+}
+
+.player-dialog-description {
+  margin: 0 0 20px;
+
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.player-dialog label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.player-dialog input {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  outline: none;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font: inherit;
+  font-size: 16px;
+}
+
+.player-dialog input:focus {
+  border-color: var(--blue);
+
+  box-shadow:
+    0 0 0 3px var(--blue-soft);
+}
+
+.player-dialog-actions {
+  margin-top: 20px;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.dialog-button {
+  min-height: 40px;
+  padding: 0 15px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  cursor: pointer;
+}
+
+.dialog-button.primary {
+  border-color: var(--blue);
+
+  background: var(--blue);
+  color: white;
+
+  font-weight: 700;
+}
+
+.dialog-button:hover {
+  border-color: var(--blue);
+}
+
+.dialog-button.primary:hover {
+  background: var(--blue-light);
+}
+
+.progress-fill {
+  transition: width 350ms ease;
+}
+
+/* =========================================
+   CALCULATEUR DE GAINS
+   ========================================= */
+
+.gain-calculator {
+  margin-top: 24px;
+}
+
+.gain-calculator-grid {
+  margin-top: 14px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.gain-field,
+.gain-result {
+  padding: 17px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: var(--surface);
+}
+
+.gain-field label,
+.gain-result-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.gain-field input {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  outline: none;
+
+  background: var(--surface-2);
+  color: var(--text);
+
+  font: inherit;
+  font-weight: 700;
+}
+
+.gain-field input:focus {
+  border-color: var(--blue);
+
+  box-shadow:
+    0 0 0 3px var(--blue-soft);
+}
+
+.gain-result strong {
+  display: block;
+
+  color: var(--blue-light);
+  font-size: 21px;
+}
+
+.gain-result small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--muted);
+}
+
+.gain-result.negative strong {
+  color: #ff6b6b;
+}
+
+.gain-result.positive strong {
+  color: var(--green);
+}
+
+@media (max-width: 760px) {
+  .gain-calculator-grid {
+    grid-template-columns: 1fr;
+  }
+}

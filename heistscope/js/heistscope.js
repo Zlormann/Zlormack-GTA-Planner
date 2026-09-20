@@ -442,3 +442,581 @@ createPlatformMenu();
 applyPlatform(
   getSavedPlatform()
 );
+
+
+/* =========================================
+   PROGRESSION DU JOUEUR
+   ========================================= */
+
+const PLAYER_DATA_KEY =
+  "heistscope-player-data";
+
+const moneyValue =
+  document.getElementById("moneyValue");
+
+const goalValue =
+  document.getElementById("goalValue");
+
+const progressValue =
+  document.getElementById("progressValue");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+function getPlayerData() {
+  const defaultData = {
+    money: 0,
+    goal: 2000000
+  };
+
+  try {
+    const saved =
+      JSON.parse(
+        localStorage.getItem(
+          PLAYER_DATA_KEY
+        )
+      );
+
+    if (!saved) {
+      return defaultData;
+    }
+
+    return {
+      money:
+        Number.isFinite(Number(saved.money))
+          ? Math.max(
+              0,
+              Number(saved.money)
+            )
+          : defaultData.money,
+
+      goal:
+        Number.isFinite(Number(saved.goal))
+          ? Math.max(
+              0,
+              Number(saved.goal)
+            )
+          : defaultData.goal
+    };
+  } catch {
+    return defaultData;
+  }
+}
+
+let playerData =
+  getPlayerData();
+
+function savePlayerData() {
+  localStorage.setItem(
+    PLAYER_DATA_KEY,
+    JSON.stringify(playerData)
+  );
+}
+
+function formatGTA(value) {
+  return (
+    "GTA$ " +
+    Math.round(value).toLocaleString(
+      "fr-FR"
+    )
+  );
+}
+
+function calculateProgress() {
+  if (playerData.goal <= 0) {
+    return 0;
+  }
+
+  return Math.min(
+    100,
+    Math.max(
+      0,
+      (
+        playerData.money /
+        playerData.goal
+      ) * 100
+    )
+  );
+}
+
+function renderPlayerProgress() {
+  const progress =
+    calculateProgress();
+
+  if (moneyValue) {
+    moneyValue.textContent =
+      formatGTA(playerData.money);
+  }
+
+  if (goalValue) {
+    goalValue.textContent =
+      formatGTA(playerData.goal);
+  }
+
+  if (progressValue) {
+    progressValue.textContent =
+      `${Math.round(progress)} %`;
+  }
+
+  if (progressBar) {
+    progressBar.style.width =
+      `${progress}%`;
+  }
+}
+
+function createPlayerDialog() {
+  const backdrop =
+    document.createElement("div");
+
+  backdrop.className =
+    "player-dialog-backdrop";
+
+  backdrop.innerHTML = `
+    <div
+      class="player-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="playerDialogTitle"
+    >
+      <h3 id="playerDialogTitle">
+        Modifier
+      </h3>
+
+      <p
+        id="playerDialogDescription"
+        class="player-dialog-description"
+      ></p>
+
+      <form id="playerDialogForm">
+
+        <label
+          for="playerDialogInput"
+          id="playerDialogLabel"
+        >
+          Montant
+        </label>
+
+        <input
+          id="playerDialogInput"
+          type="number"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          required
+        >
+
+        <div class="player-dialog-actions">
+
+          <button
+            type="button"
+            class="dialog-button"
+            id="playerDialogCancel"
+          >
+            Annuler
+          </button>
+
+          <button
+            type="submit"
+            class="dialog-button primary"
+          >
+            Enregistrer
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(backdrop);
+
+  return backdrop;
+}
+
+const playerDialog =
+  createPlayerDialog();
+
+const playerDialogTitle =
+  playerDialog.querySelector(
+    "#playerDialogTitle"
+  );
+
+const playerDialogDescription =
+  playerDialog.querySelector(
+    "#playerDialogDescription"
+  );
+
+const playerDialogLabel =
+  playerDialog.querySelector(
+    "#playerDialogLabel"
+  );
+
+const playerDialogInput =
+  playerDialog.querySelector(
+    "#playerDialogInput"
+  );
+
+const playerDialogForm =
+  playerDialog.querySelector(
+    "#playerDialogForm"
+  );
+
+const playerDialogCancel =
+  playerDialog.querySelector(
+    "#playerDialogCancel"
+  );
+
+let editingField = null;
+
+function openPlayerDialog(field) {
+  editingField = field;
+
+  if (field === "money") {
+    playerDialogTitle.textContent =
+      "Modifier votre solde";
+
+    playerDialogDescription.textContent =
+      "Indiquez votre solde GTA$ actuel.";
+
+    playerDialogLabel.textContent =
+      "Solde GTA$";
+
+    playerDialogInput.value =
+      playerData.money;
+  }
+
+  if (field === "goal") {
+    playerDialogTitle.textContent =
+      "Modifier votre objectif";
+
+    playerDialogDescription.textContent =
+      "Indiquez le montant GTA$ que vous souhaitez atteindre.";
+
+    playerDialogLabel.textContent =
+      "Objectif GTA$";
+
+    playerDialogInput.value =
+      playerData.goal;
+  }
+
+  playerDialog.classList.add("open");
+
+  requestAnimationFrame(() => {
+    playerDialogInput.focus();
+    playerDialogInput.select();
+  });
+}
+
+function closePlayerDialog() {
+  playerDialog.classList.remove("open");
+  editingField = null;
+}
+
+function makeStatEditable(
+  element,
+  field
+) {
+  if (!element) {
+    return;
+  }
+
+  const card =
+    element.closest(".stat-card");
+
+  if (!card) {
+    return;
+  }
+
+  card.classList.add("editable");
+  card.tabIndex = 0;
+
+  const hint =
+    document.createElement("span");
+
+  hint.className =
+    "stat-edit-hint";
+
+  hint.textContent =
+    "Cliquer pour modifier";
+
+  card.appendChild(hint);
+
+  card.addEventListener(
+    "click",
+    () => openPlayerDialog(field)
+  );
+
+  card.addEventListener(
+    "keydown",
+    event => {
+      if (
+        event.key === "Enter" ||
+        event.key === " "
+      ) {
+        event.preventDefault();
+        openPlayerDialog(field);
+      }
+    }
+  );
+}
+
+playerDialogForm.addEventListener(
+  "submit",
+  event => {
+    event.preventDefault();
+
+    const value =
+      Number(playerDialogInput.value);
+
+    if (
+      !Number.isFinite(value) ||
+      value < 0
+    ) {
+      return;
+    }
+
+    if (editingField === "money") {
+      playerData.money =
+        Math.round(value);
+    }
+
+    if (editingField === "goal") {
+      playerData.goal =
+        Math.round(value);
+    }
+
+    savePlayerData();
+    renderPlayerProgress();
+    closePlayerDialog();
+  }
+);
+
+playerDialogCancel.addEventListener(
+  "click",
+  closePlayerDialog
+);
+
+playerDialog.addEventListener(
+  "click",
+  event => {
+    if (event.target === playerDialog) {
+      closePlayerDialog();
+    }
+  }
+);
+
+document.addEventListener(
+  "keydown",
+  event => {
+    if (
+      event.key === "Escape" &&
+      playerDialog.classList.contains(
+        "open"
+      )
+    ) {
+      closePlayerDialog();
+    }
+  }
+);
+
+makeStatEditable(
+  moneyValue,
+  "money"
+);
+
+makeStatEditable(
+  goalValue,
+  "goal"
+);
+
+renderPlayerProgress();
+
+
+/* =========================================
+   HEISTSCOPE GAIN CALCULATOR
+   ========================================= */
+
+function createGainCalculator() {
+  const progressionSection =
+    moneyValue?.closest(
+      ".dashboard-section"
+    );
+
+  if (!progressionSection) {
+    return;
+  }
+
+  const section =
+    document.createElement("section");
+
+  section.className =
+    "gain-calculator";
+
+  section.innerHTML = `
+    <h2>CALCULATEUR DE GAINS</h2>
+
+    <div class="gain-calculator-grid">
+
+      <div class="gain-field">
+        <label for="gainStart">
+          GTA$ AVANT
+        </label>
+
+        <input
+          id="gainStart"
+          type="number"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          placeholder="500000"
+        >
+      </div>
+
+      <div class="gain-field">
+        <label for="gainEnd">
+          GTA$ APRÈS
+        </label>
+
+        <input
+          id="gainEnd"
+          type="number"
+          min="0"
+          step="1"
+          inputmode="numeric"
+          placeholder="875000"
+        >
+      </div>
+
+      <div
+        id="gainResult"
+        class="gain-result"
+      >
+        <span class="gain-result-label">
+          RÉSULTAT
+        </span>
+
+        <strong>
+          GTA$ 0
+        </strong>
+
+        <small>
+          Entrez vos deux soldes
+        </small>
+      </div>
+
+    </div>
+  `;
+
+  progressionSection.appendChild(
+    section
+  );
+
+  const startInput =
+    section.querySelector(
+      "#gainStart"
+    );
+
+  const endInput =
+    section.querySelector(
+      "#gainEnd"
+    );
+
+  const result =
+    section.querySelector(
+      "#gainResult"
+    );
+
+  const resultValue =
+    result.querySelector("strong");
+
+  const resultInfo =
+    result.querySelector("small");
+
+  function calculateGain() {
+    const start =
+      Number(startInput.value);
+
+    const end =
+      Number(endInput.value);
+
+    result.classList.remove(
+      "positive",
+      "negative"
+    );
+
+    if (
+      startInput.value === "" ||
+      endInput.value === "" ||
+      !Number.isFinite(start) ||
+      !Number.isFinite(end) ||
+      start < 0 ||
+      end < 0
+    ) {
+      resultValue.textContent =
+        "GTA$ 0";
+
+      resultInfo.textContent =
+        "Entrez vos deux soldes";
+
+      return;
+    }
+
+    const gain =
+      end - start;
+
+    const sign =
+      gain > 0
+        ? "+"
+        : gain < 0
+          ? "-"
+          : "";
+
+    resultValue.textContent =
+      `${sign}${formatGTA(
+        Math.abs(gain)
+      )}`;
+
+    if (gain > 0) {
+      result.classList.add(
+        "positive"
+      );
+    }
+
+    if (gain < 0) {
+      result.classList.add(
+        "negative"
+      );
+    }
+
+    if (start > 0) {
+      const percent =
+        (gain / start) * 100;
+
+      const percentSign =
+        percent > 0
+          ? "+"
+          : "";
+
+      resultInfo.textContent =
+        `${percentSign}${percent.toFixed(1)} %`;
+    } else if (gain > 0) {
+      resultInfo.textContent =
+        "Gain depuis GTA$ 0";
+    } else {
+      resultInfo.textContent =
+        "Aucune variation";
+    }
+  }
+
+  startInput.addEventListener(
+    "input",
+    calculateGain
+  );
+
+  endInput.addEventListener(
+    "input",
+    calculateGain
+  );
+}
+
+createGainCalculator();
