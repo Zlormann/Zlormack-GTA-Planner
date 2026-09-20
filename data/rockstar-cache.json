@@ -1,7 +1,11 @@
 {
-  "last_update": null,
+  "last_update": "2026-09-20T07:48:37.327Z",
   "source": "Rockstar Games",
+  "source_url": "https://www.rockstargames.com/gta-online",
+  "status": "online",
+  "title": "GTA Online - Rockstar Games",
   "events": [],
   "bonuses": [],
-  "discounts": []
+  "discounts": [],
+  "message": "Connexion aux informations publiques Rockstar reussie."
 }
