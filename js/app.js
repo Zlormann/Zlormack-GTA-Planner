@@ -221,23 +221,63 @@ $("resetData").addEventListener("click", () => {
   }
 });
 
-function rockstarPrototype() {
+async function refreshRockstar() {
   $("syncStatus").textContent =
-    "Connecteur Rockstar à installer";
+    "Synchronisation...";
 
-  $("lastUpdate").textContent =
-    "La récupération automatique sera ajoutée à l’étape suivante.";
+  try {
+    const response = await fetch(
+      `data/rockstar-cache.json?t=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.status === "online") {
+      $("syncStatus").textContent =
+        "🟢 Rockstar connecté";
+    } else {
+      $("syncStatus").textContent =
+        "🔴 Synchronisation indisponible";
+    }
+
+    if (data.last_update) {
+      const date = new Date(data.last_update);
+
+      $("lastUpdate").textContent =
+        `Dernière synchronisation : ${date.toLocaleString("fr-FR")}`;
+    } else {
+      $("lastUpdate").textContent =
+        "Aucune synchronisation enregistrée.";
+    }
+
+    console.log("Rockstar Live :", data);
+  } catch (error) {
+    $("syncStatus").textContent =
+      "🔴 Impossible de charger Rockstar Live";
+
+    $("lastUpdate").textContent =
+      error.message;
+
+    console.error("Rockstar Live :", error);
+  }
 }
 
 $("refreshRockstar").addEventListener(
   "click",
-  rockstarPrototype
+  refreshRockstar
 );
 
 $("refreshRockstar2").addEventListener(
   "click",
-  rockstarPrototype
+  refreshRockstar
 );
+
+refreshRockstar();
 
 renderBusinesses();
 renderTasks();
